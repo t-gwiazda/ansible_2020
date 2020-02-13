@@ -1,0 +1,4 @@
+server_name: frontend
+metadata_group: frontends
+security_group: frontend
+

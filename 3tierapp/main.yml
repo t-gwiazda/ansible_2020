@@ -1,0 +1,39 @@
+---
+- hosts: localhost
+  connection: local
+
+
+  tasks:
+  - name: Fetch Instance Info
+    os_server_facts:
+      cloud: ospcloud
+      region_name: RegionOne
+    register: r_os_servers
+
+  - name: Add host
+    add_host:
+      name: "{{ item.public_v4 }}"
+      ansible_ssh_private_key_file: /root/.ssh/test_id_rsa
+      ansible_user: cloud-user
+      group:
+        - "{{ item.metadata.group }}"
+        - "{{ item.metadata.deployment_name }}"
+    loop: "{{ r_os_servers.ansible_facts.openstack_servers }}"
+
+- name: Run common setup
+  import_playbook: playbooks/common.yml
+
+- name: Install and configure frontend
+  import_playbook: playbooks/front_end.yml
+ 
+- name: Install and configure app_tier
+  import_playbook: playbooks/app_tier.yml
+
+- name: Install database tier
+  hosts: appdbs
+  tags:
+    - dbs
+    - postgres
+
+  roles:
+    - geerlingguy.postgresql

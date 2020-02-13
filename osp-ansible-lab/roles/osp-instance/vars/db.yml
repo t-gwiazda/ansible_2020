@@ -1,0 +1,4 @@
+server_name: db
+metadata_group: appdbs
+security_group: db
+

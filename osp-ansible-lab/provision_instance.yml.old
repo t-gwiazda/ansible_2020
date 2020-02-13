@@ -1,0 +1,10 @@
+- hosts: localhost
+  connection: local
+
+- tasks:
+#  roles:
+#   - osp-instance
+
+  - include_role:
+      name: osp-instance
+      vars_from: app2.yml

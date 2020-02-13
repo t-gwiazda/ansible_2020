@@ -1,0 +1,17 @@
+- hosts: localhost
+  connection: local
+
+  tasks:
+
+  - include_role:
+      name: osp-instance
+      vars_from: app1.yml
+
+      name: osp-instance
+      vars_from: app2.yml
+
+      name: osp-instance
+      vars_from: db.yml
+
+      name: osp-instance
+      vars_from: frontend.yml

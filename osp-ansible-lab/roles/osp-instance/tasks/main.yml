@@ -1,0 +1,35 @@
+---
+  - name: Create a server instance
+    os_server:
+      cloud: ospcloud
+      name: "{{ server_name }}"
+      image: rhel-guest
+      meta: "group={{ metadata_group }},deployment_name=QA"
+      state: present
+      flavor: m2.small
+      security_groups: "{{ security_group }}"
+      key_name: ansible_ssh
+      nics:
+      - net-name: int_network
+      userdata: |
+        #!/bin/bash
+        curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
+        cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
+        curl -o /tmp/internal.repo http://www.opentlc.com/download/ansible_bootcamp/repo/internal.repo
+        cp /tmp/internal.repo /etc/yum.repos.d/internal.repo
+    register: server_out
+
+  - name: debug
+    debug: 
+      var: server_out
+
+  - name: floating_ip
+    os_floating_ip:
+      cloud: ospcloud
+      server: "{{ server_name }}"
+      network: ext_network
+    register: floating_ip_out
+
+  - name: debug_floating_ip
+    debug:
+      var: floating_ip_out

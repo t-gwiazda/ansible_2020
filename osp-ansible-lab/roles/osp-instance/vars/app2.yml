@@ -1,0 +1,4 @@
+server_name: app2
+metadata_group: apps
+security_group: apps
+
